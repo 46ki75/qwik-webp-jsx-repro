@@ -4,15 +4,17 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "^18.17.0 || ^20.3.0 || >=21.0.0"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
     "dev": "vite --mode ssr",
-    "repro": "node repro.mjs"
+    "repro": "tsx repro.ts"
   },
   "devDependencies": {
     "@qwik.dev/core": "2.0.0-beta.37",
     "@qwik.dev/router": "2.0.0-beta.37",
+    "@types/node": "20.19.0",
+    "tsx": "4.20.6",
     "typescript": "5.8.3",
     "vite": "7.3.2"
   }

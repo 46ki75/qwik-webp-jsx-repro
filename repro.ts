@@ -10,7 +10,7 @@
 // environments (printed below), so the failure is specific to the full
 // client-environment import-analysis pass.
 //
-//   node repro.mjs
+//   pnpm repro
 import { createServer } from "vite";
 import { qwikVite } from "@qwik.dev/core/optimizer";
 import { qwikRouter } from "@qwik.dev/router/vite";
@@ -29,21 +29,29 @@ const server = await createServer({
 });
 
 let failed = false;
-for (const name of ["ssr", "client"]) {
+for (const name of ["ssr", "client"] as const) {
   const env = server.environments[name];
   console.log(`\n=== ${name} environment ===`);
 
-  for (const [label, id] of [["inner image", INNER], ["@to-img", TOIMG]]) {
+  for (const [label, id] of [
+    ["inner image", INNER],
+    ["@to-img", TOIMG],
+  ] as const) {
     const r = await env.pluginContainer.resolveId(id, VIRT);
     console.log(`  resolveId(${label}) -> ${r ? r.id : "null"}`);
   }
 
   try {
     const t = await env.transformRequest(VIRT);
-    console.log(`  transformRequest(virtual jsx module) -> OK (len=${t?.code?.length})`);
+    console.log(
+      `  transformRequest(virtual jsx module) -> OK (len=${t?.code?.length})`,
+    );
   } catch (e) {
     failed = true;
-    console.log(`  transformRequest(virtual jsx module) -> FAIL: ${e.message.split("\n")[0]}`);
+    const message = e instanceof Error ? e.message : String(e);
+    console.log(
+      `  transformRequest(virtual jsx module) -> FAIL: ${message.split("\n")[0]}`,
+    );
   }
 }
 
